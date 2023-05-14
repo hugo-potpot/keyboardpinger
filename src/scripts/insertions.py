@@ -32,7 +32,7 @@ def insertions(clear=False):
     users = users_to_insert()
     for user in users:
         starter.database.add_user(user["id"], user["username"])
-    starter.database.add_favoris("dunk low bw", "39", "WTB", 218810179590815744, "DD1391-100")
+    starter.database.add_favoris("dunk low", "bw", "39", "WTB", 218810179590815744, "DD1391-100")
 
 if __name__ == "__main__":
     insertions(clear=True)

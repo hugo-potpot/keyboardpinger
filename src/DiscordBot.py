@@ -44,25 +44,29 @@ class DiscordBot(commands.Bot):
         @self.event
         async def on_message(message):
             line = [line for line in message.content.split("\n") if line != ""]
+            line[0] = line[0].lower()
             status = ""
-            if line[0].lower.contains("wtb"):
+            if "wtb" in line[0]:
                 status = "WTB"
-            elif line[0].lower.contains("wts"):
+            elif "wts" in line[0]:
                 status = "WTS"
-            # for l in line:
-            #     if len(self.database.get_message_content(line) > 0):
-            #         for
+            for i in range(1, len(line)):
+                print(line[i])
+                print(self.database.get_message_content(line[i], status))
+                # if len(self.database.get_message_content(l, status) > 0):
+
 
 
 
         @self.slash_command(name="add_keyword", description="Add a keyword to a category")
         @option(name="categorie", description="The category where you want to add the keyword", required=True)
         @option(name="name_sneakers", description="The name of sneakers", required=True)
+        @option(name="secondary_name", description="The secondary name of sneakers", required=True)
         @option(name="size", description="The size of sneakers", required=True, choices=self.get_all_size())
         @option(name="sku", description="The sku of sneakers", required=False)
-        async def add_keyword(ctx, categorie: str, name_sneakers: str, size: str, sku: str = None):
+        async def add_keyword(ctx, categorie: str, name_sneakers: str, secondary_name:str, size: str, sku: str = None):
             if ctx.guild is None:
-                if self.database.add_favoris(name_sneakers, size, sku, categorie, ctx.author.id, ):
+                if self.database.add_favoris(name_sneakers, secondary_name, size, sku, categorie, ctx.author.id):
                     await ctx.send("Keyword added")
                 else:
                     await ctx.send("Keyword already exist")

@@ -15,6 +15,7 @@ class Database:
                 CREATE TABLE IF NOT EXISTS FAVORIS(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name_sneakers VARCHAR(64) NOT NULL,
+                    secondary_name VARCHAR(64) NOT NULL,
                     size_sneakers VARCHAR(32) NOT NULL,
                     sku VARCHAR(32) DEFAULT NULL,
                     status VARCHAR(3) NOT NULL,
@@ -36,9 +37,9 @@ class Database:
         self.cur.execute("DELETE FROM USERS WHERE id=?", (id,))
         self.conn.commit()
 
-    def add_favoris(self, name_sneakers, size_sneakers, status, id_user, sku= None):
-        self.cur.execute("INSERT INTO FAVORIS (name_sneakers, size_sneakers, sku, status, id_user) VALUES (?, ?, ?, ?, ?)",
-                         (name_sneakers, size_sneakers, sku, status, id_user))
+    def add_favoris(self, name_sneakers, secondary_name, size_sneakers, status, id_user, sku= None):
+        self.cur.execute("INSERT INTO FAVORIS (name_sneakers, secondary_name, size_sneakers, sku, status, id_user) VALUES (?, ?, ?, ?, ?, ?)",
+                         (name_sneakers, secondary_name, size_sneakers, sku, status, id_user))
         self.conn.commit()
 
     def remove_favoris(self, id_user, id, status):
@@ -50,8 +51,13 @@ class Database:
             return False
         return True
 
-    def get_message_content(self, content):
-        self.cur.execute("SELECT id_user FROM FAVORIS WHERE ")
+    def get_message_content(self, content, status):
+        print(content)
+        self.cur.execute(
+            "SELECT id_user FROM FAVORIS WHERE (name_sneakers LIKE '%' || ? || '%' "
+            "AND secondary_name LIKE '%' || ? || '%' AND status != ?) "
+            "OR sku LIKE '%' || ? || '%'", (content, content, status, content))
+        return self.cur.fetchall()
 
     def __del__(self):
         self.conn.close()
